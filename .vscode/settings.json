@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./Web/ml_model",
+        "./Web/app-web-project"
+    ]
+}

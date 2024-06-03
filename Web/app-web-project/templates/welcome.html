@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            backdrop-filter: blur(5px);
+            background-image: url('/static/images/web-background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: 50% 20%; /* Centered horizontally, slightly down from the top edge */
+        }
+        .container {
+            background-color: rgba(114, 122, 59, 0.5); /* Slightly transparent white background for content */
+            border-radius: 50px;
+            padding: 20px;
+            margin-top: 60px;
+        }
+        .btn-custom {
+            background-color: #5c3316; /* Dark brown color */
+            border-color: #5c3316;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #A0522D; /* Slightly lighter brown for hover effect */
+            border-color: #A0522D;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <h1 class="mb-4">Flavor Insights: Ingredient Evaluation for a Healthier Life</h1>
+                <p class="lead">Home Page.</p>
+                <a href="{{ url_for('home') }}" class="btn btn-custom btn-lg">Access Prediction</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

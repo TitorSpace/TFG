@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flavor Insights</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+        body {
+            backdrop-filter: blur(5px);
+            background-image: url('/static/images/web-background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: 50% 20%;
+        }
+        .container {
+            background-color: rgba(114, 122, 59, 0.5);
+            border-radius: 50px;
+            padding: 20px;
+            margin-top: 60px;
+        }
+        .half-container {
+            width: 45%;
+            float: left;
+            margin: 0 2.5%;
+        }
+        .full-width-container {
+            width: 100%;
+            float: left;
+            margin-top: 20px;
+        }
+        .clear-fix {
+            clear: both;
+        }
+        .btn-add {
+            background-color: #265a28;
+            color: white;
+        }
+        .btn-search {
+            background-color: #6e5e19;
+            color: white;
+        }
+        .scrollable-list {
+            max-height: 200px; /* Altura máxima del contenedor */
+            overflow-y: scroll; /* Habilita el desplazamiento vertical */
+            border-radius: 10px; /* Esquinas redondeadas */
+            padding: 10px; /* Espaciado interno */
+            background-color: #5059228b; /* Fondo blanco */
+            margin-bottom: 20px; /* Separación inferior */
+        }
+        .scrollable-list::-webkit-scrollbar {
+            width: 8px; /* Tamaño del scrollbar */
+        }
+        .scrollable-list::-webkit-scrollbar-thumb {
+            background-color: #888; /* Color del pulgar del scrollbar */
+            border-radius: 10px; /* Esquinas redondeadas del pulgar */
+        }
+        .scrollable-list::-webkit-scrollbar-thumb:hover {
+            background-color: #555; /* Color del pulgar del scrollbar al pasar el cursor */
+        }
+        .scrollable-list + .btn {
+            margin-top: 10px; /* Separación entre la lista y los botones */
+        }
+
+        .form-control + .btn-add {
+            margin-top: 10px; /* Separación entre la lista y los botones */
+        }
+
+        .form-control + .btn-search {
+            margin-top: 10px; /* Separación entre la lista y los botones */
+        }
+
+        .form-control {
+            background-color: #b5ae7575; /* Cambia el color de fondo de los campos de entrada */
+            border: 1px solid #000000; /* Color del borde */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        .form-control:focus {
+            background-color: #6b8a1d47; /* Cambia el color de fondo cuando está enfocado */
+            border-color: #506f4b; /* Cambia el color del borde cuando está enfocado */
+            outline: 0; /* Elimina el contorno */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Sombra alrededor del campo cuando está enfocado */
+        }
+        .list-group-item {
+            background-color: #b5ad75; /* Cambia el color de fondo de cada elemento del listado */
+            border: 1px solid #c3e6cb; /* Cambia el color del borde de cada elemento */
+            border-radius: 5px; /* Esquinas redondeadas para los elementos del listado */
+        }
+
+        .result-box {
+            background-color: #759461; /* Color de fondo del marco de resultado */
+            border: 1px solid #00510c; /* Color del borde del marco de resultado */
+            padding: 10px; /* Espaciado interno */
+            border-radius: 10px; /* Esquinas redondeadas */
+            margin-bottom: 10px; /* Separación inferior */
+            color: #000000; /* Color del texto */
+        }
+        
+        .btn-reset {
+            margin-bottom: 10px; /* Separación inferior */
+        }
+
+        .feedback-form {
+            margin-top: 20px;
+        }
+
+        .feedback-form {
+            margin-top: 20px;
+            background-color: rgba(89, 59, 59, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4 text-center">Welcome to the Flavor Insights Web Application</h1>
+        <div class="half-container">
+            <div class="mb-3">
+                <form action="/add" method="post">
+                    <label for="valueInput">Enter an ingredient:</label>
+                    <input type="text" class="form-control" id="valueInput" name="valueInput" required>
+                    <button type="submit" class="btn btn-add mb-3">Add</button>
+                </form>
+            </div>
+            
+            <!-- Error message -->
+            {% if error %}
+            <div class="alert alert-warning" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <h2>Added ingredients:</h2>
+            <div class="scrollable-list">
+                <ul class="list-group mb-4">
+                    {% for value in ingredientes_prod %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ value }}
+                        <form action="/delete/{{ loop.index0 }}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Prediction and reset buttons -->
+            <form action="/predecir" method="post" class="mb-2">
+                <button type="submit" class="btn btn-dark">Predict</button>
+            </form>
+            <form action="/reset" method="post">
+                <button type="submit" class="btn btn-secondary btn-reset">Reset</button>
+            </form>
+
+            <!-- Prediction results -->
+            {% if resultado_nova %}
+            <p class="result-box">{{ resultado_nova }}</p>
+            {% endif %}
+            {% if resultados_nutri %}
+            <p class="result-box">{{ resultados_nutri }}</p>
+            {% endif %}
+            
+            <!-- Feedback Form -->
+            {% if resultado_nova or resultados_nutri %}
+            <div class="feedback-form">
+                <h3>Was the prediction accurate?</h3>
+                <form action="/feedback" method="post">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="feedback" id="feedbackYes" value="yes" required>
+                        <label class="form-check-label" for="feedbackYes">Yes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="feedback" id="feedbackNo" value="no" required>
+                        <label class="form-check-label" for="feedbackNo">No</label>
+                    </div>
+                    <div id="correctionForm" style="display: none; margin-top: 10px;">
+                        <div class="mb-3">
+                            <label for="novaScoreCorrection">Correct Nova Score:</label>
+                            <select class="form-control" id="novaScoreCorrection" name="novaScoreCorrection">
+                                <option value="">Select a value</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nutriScoreCorrection">Correct Nutri Score:</label>
+                            <select class="form-control" id="nutriScoreCorrection" name="nutriScoreCorrection">
+                                <option value="">Select a value</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </form>
+            </div>
+            {% endif %}
+            
+            <!-- Feedback message -->
+            {% if feedback_message %}
+            <div class="alert alert-info mt-3" role="alert">
+                {{ feedback_message }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="half-container">
+            <div class="mb-3">
+                <form action="/buscar_producto" method="post">
+                    <label for="productoInput">Enter a product:</label>
+                    <input type="text" class="form-control" id="productoInput" name="productoInput" required>
+                    <button type="submit" class="btn btn-search mb-3">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+        <!-- Autocomplete Script -->
+        <script>
+        $(function() {
+            $("#valueInput").autocomplete({
+                source: function(request, response) {
+                    $.getJSON("/suggest_ingredient", { term: request.term }, response);
+                },
+                minLength: 1,
+                select: function(event, ui) {
+                    console.log("Selected: " + ui.item.value);
+                }
+            });
+
+            $("#productoInput").autocomplete({
+                source: function(request, response) {
+                    $.getJSON("/suggest_product", { term: request.term }, response); // Use the appropriate endpoint for product suggestions
+                },
+                minLength: 1,
+                select: function(event, ui) {
+                    console.log("Selected: " + ui.item.value);
+                }
+            });
+
+            
+            $('input[name="feedback"]').on('change', function() {
+                if ($(this).val() === 'no') {
+                    $('#correctionForm').show();
+                } else {
+                    $('#correctionForm').hide();
+                }
+            });
+        });
+        </script>
+    </div>
+</body>
+</html>
